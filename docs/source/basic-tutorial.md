@@ -43,12 +43,12 @@ Suppose we wanted to refer to an HTTP server on the current host.
 We could refer to it as a *host-based service*, or in the default
 mechanism form (in this case, for krb5):
 
-    >>> server_hostbased_name = gssapi.Name('HTTP@' + FQDN, name_type=gssapi.NameType.hostbased_service)
+    >>> server_hostbased_name = gssapi.Name(f"HTTP@{FQDN}", name_type=gssapi.NameType.hostbased_service)
     >>> server_hostbased_name
-    Name(b'HTTP@sross', <OID 1.2.840.113554.1.2.1.4>)
-    >>> server_name = gssapi.Name('HTTP/sross@')
+    Name(b'HTTP@seton.mivehind.net', <OID 1.2.840.113554.1.2.1.4>)
+    >>> server_name = gssapi.Name(f"HTTP/{FQDN}@")
     >>> server_name
-    Name(b'HTTP/sross@', None)
+    Name(b'HTTP/seton.mivehind.net@', None)
     >>>
 
 These are both effectively the same, but if we *canonicalize* both
@@ -80,7 +80,7 @@ to acquire credentials as such:
 
     >>> REALM.addprinc('HTTP/%s@%s' % (FQDN, REALM.realm))
     >>> REALM.extract_keytab('HTTP/%s@%s' % (FQDN, REALM.realm), REALM.keytab)
-    >>> server_creds = gssapi.Credentials(usage='accept', name=server_name)
+    >>> server_creds = gssapi.Credentials(usage='accept', name=server_hostbased_name)
     >>>
 
 Note that for the krb5 mechanism, in order to acquire credentials with
@@ -100,7 +100,7 @@ credentials are usable:
 
     >>> server_creds.usage
     'accept'
-    >>> server_creds.name == server_name
+    >>> server_creds.name == server_hostbased_name
     True
     >>> server_creds.lifetime is None
     True
@@ -125,7 +125,7 @@ When establishing a security context, the default credentials are
 used unless otherwise specified.  This allows applications to use
 the user's already acquired credentials:
 
-    >>> client_ctx = gssapi.SecurityContext(name=server_name, usage='initiate')
+    >>> client_ctx = gssapi.SecurityContext(name=server_hostbased_name, usage='initiate')
     >>> initial_client_token = client_ctx.step()
     >>> client_ctx.complete
     False
