@@ -137,3 +137,9 @@ try:
     from gssapi.raw.ext_set_cred_opt import *  # noqa
 except ImportError:
     pass
+
+# optional krb5 support
+try:
+    from gssapi.raw.ext_krb.pyx import *  # noqa
+except Import Error:
+    pass

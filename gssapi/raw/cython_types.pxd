@@ -45,6 +45,11 @@ cdef extern from "python_gssapi.h":
         gss_buffer_desc application_data
     ctypedef gss_channel_bindings_struct* gss_channel_bindings_t
 
+    cdef struct krb5_gss_ccache_name_req:
+        char *name
+        char **out_name
+    ctypedef krb5_gss_ccache_name_req* ccache_name_req_t
+
     # util methods
     OM_uint32 gss_release_buffer(OM_uint32 *min_stat, gss_buffer_t buff)
     OM_uint32 gss_create_empty_oid_set(OM_uint32 *min_stat,
